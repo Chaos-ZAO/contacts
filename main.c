@@ -266,26 +266,54 @@ void delete_contact(void)
 
 void save_contacts(void)
 {
-    /*
-     * 第 10 章 文件
-     * 要求：
-     *   1. fopen(DATA_FILE, "w")，返回 NULL 说明打开失败，必须判断
-     *   2. 每行写一条记录，例如 name|phone|addr
-     *   3. fclose
-     * 注意：字段里如果可能有 '|'，要么换分隔符，要么读的时候特殊处理
-     */
-    printf("[未实现] save_contacts\n");
+    FILE *fp;
+    int i;
+
+    fp = fopen(DATA_FILE, "w");
+    if (fp == NULL) {
+        printf("保存失败：无法打开文件 %s。\n", DATA_FILE);
+        return;
+    }
+
+    for (i = 0; i < count; i++) {
+        fprintf(fp, "%s|%s|%s\n",
+                contacts[i].name, contacts[i].phone, contacts[i].addr);
+    }
+    fclose(fp);
+    printf("已保存 %d 条记录到 %s。\n", count, DATA_FILE);
 }
 
 void load_contacts(void)
 {
-    /*
-     * 第 10 章 文件
-     * 要求：
-     *   1. 程序启动时调用；文件不存在（fopen 返回 NULL）时直接返回，不要崩溃
-     *   2. 逐行读到 count 上限为止
-     *   3. 每行按 '|' 拆成三个字段，存进 contacts[count]，然后 count++
-     *   4. 读到文件末尾（EOF）就停止
-     */
-    printf("[未实现] load_contacts\n");
+    FILE *fp;
+    char line[200];
+    char *p;
+    char *phone_start;
+
+    fp = fopen(DATA_FILE, "r");
+    if (fp == NULL) {
+        return;   /* 第一次运行没有文件，直接返回，不要崩溃 */
+    }
+
+    while (count < MAX_CONTACTS && fgets(line, sizeof(line), fp) != NULL) {
+        /* 按 '|' 把一行拆成 name、phone、addr 三段 */
+        p = strchr(line, '|');
+        if (p == NULL) continue;
+        *p = '\0';
+        strncpy(contacts[count].name, line, NAME_LEN - 1);
+        contacts[count].name[NAME_LEN - 1] = '\0';
+
+        phone_start = p + 1;
+        p = strchr(phone_start, '|');
+        if (p == NULL) continue;
+        *p = '\0';
+        strncpy(contacts[count].phone, phone_start, PHONE_LEN - 1);
+        contacts[count].phone[PHONE_LEN - 1] = '\0';
+
+        strncpy(contacts[count].addr, p + 1, ADDR_LEN - 1);
+        contacts[count].addr[ADDR_LEN - 1] = '\0';
+
+        count++;
+    }
+    fclose(fp);
 }
