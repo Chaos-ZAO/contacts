@@ -116,14 +116,21 @@ void show_menu(void)
 static void read_line(char *buf, int size)
 {
     size_t len;
+    int ch;
 
     if (fgets(buf, size, stdin) == NULL) {
         buf[0] = '\0';
         return;
     }
     len = strlen(buf);
-    if (len > 0 && buf[len - 1] == '\n')
+    if (len > 0 && buf[len - 1] == '\n') {
         buf[len - 1] = '\0';
+    } else {
+        /* 没读到换行 = 输入超出了 buf 容量，剩余字符还在缓冲区里，
+           必须清空，否则会被下一个 read_line 当成输入读走 */
+        while ((ch = getchar()) != '\n' && ch != EOF) {
+        }
+    }
 }
 
 /* ================= 下面 7 个函数中，前两个已完成，其余由你自己实现 ================= */
