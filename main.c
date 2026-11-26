@@ -170,27 +170,64 @@ void list_contacts(void)
 
 void search_contact(void)
 {
-    /*
-     * 第 6 章 字符数组 + 第 8 章 指针
-     * 要求：
-     *   1. 读入要查找的姓名
-     *   2. 用 strcmp 逐条比较
-     *   3. 找到就打印完整信息；找不到提示"没有找到"
-     *   4. 注意：比较前要把 fgets 读到的换行去掉，否则永远匹配不上
-     */
-    printf("[未实现] search_contact\n");
+    char name[NAME_LEN];
+    int i;
+    int found = 0;
+
+    if (count == 0) {
+        printf("通讯录为空，没什么可查的。\n");
+        return;
+    }
+
+    printf("要查找的姓名: ");
+    read_line(name, NAME_LEN);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(contacts[i].name, name) == 0) {
+            printf("找到：\n");
+            printf("  姓名: %s\n", contacts[i].name);
+            printf("  电话: %s\n", contacts[i].phone);
+            printf("  地址: %s\n", contacts[i].addr);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("没有找到名为 \"%s\" 的联系人。\n", name);
+    }
 }
 
 void update_contact(void)
 {
-    /*
-     * 第 9 章 结构体
-     * 要求：
-     *   1. 先按姓名查找到目标记录
-     *   2. 重新输入电话和地址（姓名保持不变）
-     *   3. 提示修改成功
-     */
-    printf("[未实现] update_contact\n");
+    char name[NAME_LEN];
+    int i;
+    int idx = -1;
+
+    if (count == 0) {
+        printf("通讯录为空，没什么可改的。\n");
+        return;
+    }
+
+    printf("要修改的姓名: ");
+    read_line(name, NAME_LEN);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(contacts[i].name, name) == 0) {
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx < 0) {
+        printf("没有找到名为 \"%s\" 的联系人。\n", name);
+        return;
+    }
+
+    printf("修改电话: ");
+    read_line(contacts[idx].phone, PHONE_LEN);
+    printf("修改地址: ");
+    read_line(contacts[idx].addr, ADDR_LEN);
+    printf("已修改 %s 的信息。\n", name);
 }
 
 void delete_contact(void)
