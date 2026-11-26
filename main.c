@@ -232,15 +232,36 @@ void update_contact(void)
 
 void delete_contact(void)
 {
-    /*
-     * 第 6 章 数组元素移动 —— 本项目的核心算法
-     * 要求：
-     *   1. 按姓名找到下标 i
-     *   2. 把 i 之后的元素全部往前搬一位：contacts[j] = contacts[j + 1]
-     *   3. count--，并提示删除成功
-     *   4. 找不到时提示"没有找到"
-     */
-    printf("[未实现] delete_contact\n");
+    char name[NAME_LEN];
+    int i, j;
+    int idx = -1;
+
+    if (count == 0) {
+        printf("通讯录为空，没什么可删的。\n");
+        return;
+    }
+
+    printf("要删除的姓名: ");
+    read_line(name, NAME_LEN);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(contacts[i].name, name) == 0) {
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx < 0) {
+        printf("没有找到名为 \"%s\" 的联系人。\n", name);
+        return;
+    }
+
+    /* 把 idx 后面的元素逐个往前搬一位，结构体可以整体赋值 */
+    for (j = idx; j < count - 1; j++) {
+        contacts[j] = contacts[j + 1];
+    }
+    count--;
+    printf("已删除 %s，现在共 %d 条。\n", name, count);
 }
 
 void save_contacts(void)
