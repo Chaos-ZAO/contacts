@@ -107,32 +107,60 @@ void show_menu(void)
     printf("请选择: ");
 }
 
-/* ================= 下面 7 个函数由你自己实现 ================= */
+/* 读一行到 buf，并把末尾的换行去掉（fgets 会连换行一起读进来） */
+static void read_line(char *buf, int size)
+{
+    size_t len;
+
+    if (fgets(buf, size, stdin) == NULL) {
+        buf[0] = '\0';
+        return;
+    }
+    len = strlen(buf);
+    if (len > 0 && buf[len - 1] == '\n')
+        buf[len - 1] = '\0';
+}
+
+/* ================= 下面 7 个函数中，前两个已完成，其余由你自己实现 ================= */
 
 void add_contact(void)
 {
-    /*
-     * 第 9 章 结构体 + 第 6 章 字符数组
-     * 要求：
-     *   1. count 已达到 MAX_CONTACTS 时，提示"通讯录已满"并返回
-     *   2. 依次读入姓名、电话、地址（提示语自己定）
-     *   3. 每个字段都要检查长度，超出就截断或提示重输
-     *   4. 存进 contacts[count]，然后 count++
-     * 提示：用 fgets 读整行，它能读进空格；scanf("%s") 遇到空格就停
-     */
-    printf("[未实现] add_contact\n");
+    if (count >= MAX_CONTACTS) {
+        printf("通讯录已满，不能再添加（上限 %d 条）。\n", MAX_CONTACTS);
+        return;
+    }
+
+    printf("姓名: ");
+    read_line(contacts[count].name, NAME_LEN);
+    if (contacts[count].name[0] == '\0') {
+        printf("姓名不能为空，已取消添加。\n");
+        return;
+    }
+
+    printf("电话: ");
+    read_line(contacts[count].phone, PHONE_LEN);
+
+    printf("地址: ");
+    read_line(contacts[count].addr, ADDR_LEN);
+
+    count++;
+    printf("已添加第 %d 条记录。\n", count);
 }
 
 void list_contacts(void)
 {
-    /*
-     * 第 5 章 循环 + 第 6 章 数组
-     * 要求：
-     *   1. count 为 0 时提示"通讯录为空"
-     *   2. 用 for 循环打印每条记录，格式对齐（例如 %-10s）
-     *   3. 带序号，从 1 开始
-     */
-    printf("[未实现] list_contacts\n");
+    int i;
+
+    if (count == 0) {
+        printf("通讯录为空。\n");
+        return;
+    }
+
+    printf("\n序号 | 姓名 | 电话 | 地址\n");
+    for (i = 0; i < count; i++) {
+        printf("%d | %s | %s | %s\n",
+               i + 1, contacts[i].name, contacts[i].phone, contacts[i].addr);
+    }
 }
 
 void search_contact(void)
