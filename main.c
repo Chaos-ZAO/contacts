@@ -296,6 +296,10 @@ void load_contacts(void)
     }
 
     while (count < MAX_CONTACTS && fgets(line, sizeof(line), fp) != NULL) {
+        size_t len = strlen(line);
+        if (len > 0 && line[len - 1] == '\n')
+            line[len - 1] = '\0';   /* fgets 会连换行一起读进来，先去掉 */
+
         /* 按 '|' 把一行拆成 name、phone、addr 三段 */
         p = strchr(line, '|');
         if (p == NULL) continue;
