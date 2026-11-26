@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <windows.h>   /* SetConsoleOutputCP / SetConsoleCP */
 
 #define MAX_CONTACTS 100
 #define NAME_LEN     21
@@ -45,6 +46,10 @@ int main(void)
 {
     int choice;
     int ch;
+
+    /* 让 Windows 控制台用 UTF-8 显示中文，解决乱码 */
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
 
     load_contacts();
 
